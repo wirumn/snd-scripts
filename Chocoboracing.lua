@@ -1,7 +1,9 @@
 math.randomseed(os.time())
 
 function jitter_wait(min, max)
-    local r = math.random(min * 1000, max * 1000) / 1000
+    local imin = math.floor(min * 1000)
+    local imax = math.floor(max * 1000)
+    local r = math.random(imin, imax) / 1000
     yield("/wait " .. r)
 end
 
