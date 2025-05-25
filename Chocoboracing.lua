@@ -1,37 +1,24 @@
 math.randomseed(os.time())
 
-function random_wait(min, max)
-    local r = math.random(min * 10, max * 10) / 10
+function jitter_wait(min, max)
+    local r = math.random(min * 1000, max * 1000) / 1000
     yield("/wait " .. r)
 end
 
 while true do
-    local zone
+    repeat jitter_wait(0.8, 1.2) until GetZoneID() == 390
 
-    -- Wait until inside Sagolii Road (zone ID 390)
-    repeat
-        yield("/wait 1")
-        zone = GetZoneID()
-    until zone == 390
-
-    -- Try Super Sprint until it activates (race has started)
-    local sprinted = false
+    local attempts = 0
     repeat
         yield("/send KEY_2")
-        random_wait(0.4, 0.6)   -- Slightly variable wait
-        sprinted = HasStatusId(1058)
-    until sprinted == true
+        jitter_wait(0.4, 0.6)
+        attempts = attempts + 1
+    until HasStatusId(1058) or attempts > 20
 
-    -- Steer left with variable hold time
-    local steer_time = math.random(5, 7)
+    local steer_time = math.random(450, 650) / 100  
     yield("/hold A")
-    yield("/wait " .. steer_time)
+    jitter_wait(steer_time - 0.3, steer_time + 0.3)
     yield("/release A")
 
-    -- Wait until zone changes (race ends)
-    repeat
-        yield("/wait 2")
-        zone = GetZoneID()
-    until zone ~= 390
-
+    repeat jitter_wait(1.5, 2.5) until GetZoneID() ~= 390
 end
