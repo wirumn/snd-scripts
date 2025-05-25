@@ -17,9 +17,9 @@ while true do
         attempts = attempts + 1
     until HasStatusId(1058) or attempts > 20
 
-    local steer_time = math.random(450, 650) / 100  
+    local steer_time = math.random(170, 300) / 100
     yield("/hold A")
-    jitter_wait(steer_time - 0.3, steer_time + 0.3)
+    jitter_wait(steer_time, steer_time)
     yield("/release A")
 
     repeat jitter_wait(1.5, 2.5) until GetZoneID() ~= 390
